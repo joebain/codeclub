@@ -1,7 +1,7 @@
 var game = new Phaser.Game(400, 400, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
 
 function preload () {
-    game.load.spritesheet('red-bean', 'images/bean_red_with_explosion.png', 82, 82);
+    game.load.spritesheet('bean', 'images/red_bean.png', 82, 82);
 }
 
 function create() {
@@ -30,7 +30,7 @@ function update() {
 }
 
 var Bean = function(x, y) {
-    Phaser.Sprite.call(this, game, x, y, 'red-bean');
+    Phaser.Sprite.call(this, game, x, y, 'bean');
     this.inputEnabled = true;
 
     this.animations.add('explode', [1,2,3,4,5], 12);
