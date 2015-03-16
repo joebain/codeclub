@@ -1,43 +1,57 @@
 var game = new Phaser.Game(400, 400, Phaser.CANVAS, '', {preload: preload, create: create, update: update});
 
 function preload () {
-//    var image_web_site = "https://s3-eu-west-1.amazonaws.com/joebain/candy/";
-    var image_web_site = "images/";
-//    this.load.image('blue-bean', image_web_site + 'bean_blue.png');
-    this.load.spritesheet('blue-bean', image_web_site + 'bean_blue_with_explosion.png', 82, 82);
-//    this.load.image('red-bean',  image_web_site + 'bean_red.png');
-    this.load.spritesheet('red-bean', image_web_site + 'bean_red_with_explosion.png', 82, 82);
+    game.load.spritesheet('red-bean', 'images/bean_red_with_explosion.png', 82, 82);
 }
 
 function create() {
-    layoutBeans();
+    game.countdown = 0;
+    game.score = 0;
+    game.beanInterval = 1000;
+    game.beanSpeed = 1;
+    game.scoreBoard = game.add.text(10, 10, game.score, {font: '40px Arial', fill: 'white'});
 }
     
 function update() {
-}
-
-function layoutBeans() {
-    game.beans = [];
-    for (var i = 0 ; i < 9 ; i++) {
-        game.beans[i] = [];
-        for (var j = 0 ; j < 9 ; j++) {
-            var bean = new Bean(i*40, j*40, 'red');
-            game.beans[i][j] = bean;
+    if (!game.gameover) {
+        if (game.countdown <= 0) {
+            var bean = new Bean(Math.random() * (game.width - 100), 0);
             game.add.existing(bean);
+            game.countdown = game.beanInterval;
+            
+            if (game.beanInterval > 300) {
+                game.beanInterval -= 10;
+                game.beanSpeed += 0.2;
+            }
         }
+        game.countdown = game.countdown - game.time.elapsed;
+        game.scoreBoard.text = game.score;
     }
 }
 
-
-var Bean = function(x, y, colour) {
-    Phaser.Sprite.call(this, game, x, y, colour + '-bean');
+var Bean = function(x, y) {
+    Phaser.Sprite.call(this, game, x, y, 'red-bean');
     this.inputEnabled = true;
-    this.input.pixelPerfectClick = true;
 
     this.animations.add('explode', [1,2,3,4,5], 12);
 
     this.events.onInputDown.add(function() {
         this.animations.play('explode', 12, false, true);
+        game.score++;
+    }, this);
+    
+    this.update = function() {
+        if (!game.gameover) {
+            this.y = this.y + 1;
+        }
+        if (this.y > game.height) {
+            game.add.text(80, 180, "Game Over", {font: '40px Arial', fill: 'white'});
+            game.gameover = true;
+        }
+    };
+    
+    this.events.onKilled.add(function() {
+        setTimeout(this.destroy.bind(this), 0);
     }, this);
 };
 Bean.prototype = Object.create(Phaser.Sprite.prototype);
