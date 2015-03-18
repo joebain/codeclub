@@ -6,11 +6,13 @@ var game = new Phaser.Game(400, 400, Phaser.CANVAS, '',
 // this is where images are loaded, you don't need to change this
 function preload () {
     game.load.spritesheet('bean', 'images/red_bean.png', 82, 82);
+    game.load.image('background', 'images/desert_background.png');
 }
 
 
 // this is where we set everything up before the game starts
 function create() {
+    game.add.image(0,0,'background');
     
     
 }

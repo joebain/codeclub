@@ -2,9 +2,11 @@ var game = new Phaser.Game(400, 400, Phaser.CANVAS, '', {preload: preload, creat
 
 function preload () {
     game.load.spritesheet('bean', 'images/red_bean.png', 82, 82);
+    game.load.image('background', 'images/desert_background.png');
 }
 
 function create() {
+    game.add.image(0,0,'background');
     game.countdown = 0;
     game.score = 0;
     game.beanInterval = 1000;
